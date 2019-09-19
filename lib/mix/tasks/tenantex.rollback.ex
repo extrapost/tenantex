@@ -25,7 +25,7 @@ defmodule Mix.Tasks.Tenantex.Rollback do
     Code.compiler_options(ignore_module_conflict: true)
     repo = Tenantex.get_repo()
     ensure_repo(repo, args)
-    {:ok, pid, _apps} = ensure_started(repo, []) #TODO - Not respecting PoolSize
+    # {:ok, pid, _apps} = ensure_started(repo, []) #TODO - Not respecting PoolSize
     sandbox? = repo.config[:pool] == Ecto.Adapters.SQL.Sandbox
 
     # If the pool is Ecto.Adapters.SQL.Sandbox,
@@ -36,7 +36,7 @@ defmodule Mix.Tasks.Tenantex.Rollback do
     end
 
     tenants = Tenantex.list_tenants
-    pid && repo.stop(pid)
+    # pid && repo.stop(pid)
 
     tenants
     |> Enum.each(&rollback.(args, &1))
