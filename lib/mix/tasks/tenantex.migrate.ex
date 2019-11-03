@@ -25,7 +25,6 @@ defmodule Mix.Tasks.Tenantex.Migrate do
     Code.compiler_options(ignore_module_conflict: true)
     repo = Tenantex.get_repo()
     ensure_repo(repo, args)
-    # {:ok, pid, _apps} = ensure_started(repo, [])
     sandbox? = repo.config[:pool] == Ecto.Adapters.SQL.Sandbox
 
     # If the pool is Ecto.Adapters.SQL.Sandbox,
@@ -35,12 +34,13 @@ defmodule Mix.Tasks.Tenantex.Migrate do
       Ecto.Adapters.SQL.Sandbox.checkout(repo, sandbox: false)
     end
 
-    tenants = Tenantex.list_tenants
-    # pid && repo.stop(pid)
+    Ecto.Migrator.with_repo(repo, fn _ ->
+      tenants = Tenantex.list_tenants
 
-    # Now run the migrations
-    tenants
-    |> Enum.each(&migrator.(args, &1))
+      # Now run the migrations
+      tenants
+      |> Enum.each(&migrator.(args, &1))
+    end)
   end
 
   def migrate_with_prefix(args, prefix) do
